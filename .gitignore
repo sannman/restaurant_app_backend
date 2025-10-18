@@ -1,0 +1,14 @@
+#.env file with secrets
+.env
+
+# Python cache
+__pycache__/
+.pytest_cache/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
