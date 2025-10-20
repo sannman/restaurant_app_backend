@@ -15,15 +15,17 @@ def add_dish():
 @seller_bp.route("/sellers/login", methods=["POST"])
 def seller_login():
     data = request.get_json()
-    email = data.get()
-    password = data.get()
-    response = supabase.auth.sign_in_with_password(
-    {
+    email = data.get("email")
+    password = data.get("password")
+    response = supabase.auth.sign_in_with_password({
         "email": email,
-        "password": password,
-    }
-)
-    ...
+        "password": password
+    })
+    user_data = {
+            "email": response.user.email,
+            "created_at": response.user.created_at,
+        }
+    return jsonify({"user": user_data})
 
 
 @seller_bp.route("/sellers/signup", methods=["POST"])
@@ -37,6 +39,10 @@ def seller_signup():
         "email": email,
         "password": password,
     }
-)
-    ...
+    )
+    user_data = {
+            "email": response.user.email,
+            "password": password
+        }
+    return jsonify({"user": user_data})
 
