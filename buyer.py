@@ -20,7 +20,7 @@ def seller_login():
     })
     user_data = {
             "email": response.user.email,
-            "created_at": response.user.created_at,
+            "password": password
         }
     return jsonify({"user": user_data})
 
