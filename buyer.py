@@ -45,3 +45,8 @@ def get_dishes():
     response = supabase.table("DISH").select("*").execute()
     return jsonify(response.data)
 
+@buyer_bp.route("/dishes/search", methods=["GET"])
+def search_dishes():
+    query = request.args.get("query", "")
+    response = supabase.table("DISH").select("*").ilike("Dish", f"%{query}%").execute()
+    return jsonify(response.data)
