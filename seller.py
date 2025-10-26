@@ -43,28 +43,50 @@ def seller_signup():
     }
     supabase.table("users").insert(data_seller).execute()
     user_data = {
-            "email": response.user.email,
-            "session": response.session.access_token,
-            "user_id": response.user.id
+            "email": getattr(response.user, "email", None),
+            "session": getattr(getattr(response, "session", None), "access_token", None),
+            "user_id": getattr(response.user, "id", None)
 
         }
+    
 
-    return jsonify({"user": user_data})
+    return jsonify({"user": user_data}), 201
 
-def get_seller_by_id(seller_id):
-    response = supabase.table("users").select("*").eq("id", seller_id).execute()
+
+
+def get_seller_by_id(email):
+    response = supabase.table("users").select("*").eq("role_id", 1).eq("email", email).execute()
     if response.data:
-        print(response.data[0])
+        print(response.data)
         return response.data[0]
     
     return None
 
+
 @seller_bp.route("/dishes", methods=["POST"])
 def add_dish():
     data = request.get_json()
+    print("Received data:", data)
     dish = data.get("dish")
     price = data.get("price")
-    seller_id = data.get("seller_id")
+    email = data.get("email")
+    seller = get_seller_by_id(email)
+    if not seller:
+        return jsonify({"error": "Seller not found."}), 404
+    if seller["role_id"] != 1:
+        return jsonify({"error": "Only sellers can add dishes."}), 403
+    if seller["role_id"] == 1:
+        dish_data = {
+            
+            "dish": dish,
+            "price": price,
+            "user_id": seller["id"],
+            "role_id": seller["role_id"]
+        }
+        print("Dish data " , dish_data)
+        supabase.table("dish").insert(dish_data).execute()
+        return jsonify(f"Dish added name : {dish} , price : {price}"), 201
 
-    get_seller_by_id(seller_id)
+
+
 
