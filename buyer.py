@@ -4,11 +4,6 @@ from secret import supabase
 
 buyer_bp = Blueprint("buyer", __name__)
 
-@buyer_bp.route("/dishes", methods=["GET"])
-def get_dishes():
-    response = supabase.table("DISH").select("*").execute()
-    return jsonify(response.data)
-
 @buyer_bp.route("/buyers/login", methods=["POST"])
 def seller_login():
     data = request.get_json()
@@ -42,4 +37,11 @@ def buyer_signup():
             "password": password
         }
     return jsonify({"user": user_data})
+
+
+
+@buyer_bp.route("/dishes", methods=["GET"])
+def get_dishes():
+    response = supabase.table("DISH").select("*").execute()
+    return jsonify(response.data)
 
