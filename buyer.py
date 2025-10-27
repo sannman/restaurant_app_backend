@@ -49,6 +49,6 @@ def get_dishes():
 def search_dishes():
     query  = request.get_json()
     search = query.get("query")
-    response = supabase.table("dish").select("*").ilike("dish", f"%{search}%").execute()
+    response = supabase.table("dish").select("*").like("dish", search).execute()
     print(response.data)
     return jsonify(response.data)
